@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+from collections import Counter
 class Ui_MainWindow(object):
     res1=''
     res2=''
@@ -153,8 +153,7 @@ class Ui_MainWindow(object):
     def calculate(self):
         self.inp1 = self.textEdit.toPlainText()
         self.inp2 = self.textEdit_2.toPlainText()
-        self.res1,self.res2 = self.removeDup(self.inp1.lower(),self.inp2.lower())
-        total_len = len(self.res1)+len(self.res2)
+        total_len = self.removeDup(self.inp1.lower(),self.inp2.lower())
         lst = ['F','L','A','M','E','S']
         indx = 0
         while(len(lst)> 1):
@@ -172,17 +171,16 @@ class Ui_MainWindow(object):
         # (242, 244, 248,0.3)
     
     def removeDup(self,inp1, inp2):
-        res1 = ''
-        res2 = ''
-        for val in inp1:
-            b = False
-            if val in inp2:
-                inp2 = inp2[:inp2.index(val)] + inp2[inp2.index(val)+1:]
-                b = True
-            if not b:
-                res1 += val
-        res2 = inp2    
-        return res1,res2
+        ocur = Counter(inp1)
+
+        for i in inp2:
+            ocur[i] -= 1;
+
+        ans = 0
+        for i in ocur:
+            if ocur[i] != 0:
+                ans += abs(ocur[i])
+        return ans
         
 
     def retranslateUi(self, MainWindow):
